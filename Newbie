@@ -1,0 +1,642 @@
+import time
+import sys
+import random
+
+player = {}
+goblin = {"name": "Goblin", "experience": 25, "attack": 15, "defense": 5, "health": 20, "coins": 20}
+bandit = {"name": "Bandit", "experience": 30, "attack": 20, "defense": 2, "health": 25, "coins": 25}
+guards1 = {"name": "Guards", "experience": 40, "attack": 30, "defense": 6, "health": 50, "coins": 100}
+cannon = {"name": "Cannon Crew", "experience": 1000, "attack": 200, "defense": 7, "health": 800, "coins": 1000}
+royal_guards = {"name": "Royal Guards", "experience": 1500, "attack": 500, "defense": 8, "health": 1200, "coins": 1400}
+general1 = {"name": "General Vod", "experience": 80000, "attack": 1300, "defense": 53, "health": 9000,
+            "coins": 320000}
+general2 = {"name": "General Love", "experience": 90000, "attack": 1000, "defense": 54, "health": 12500,
+            "coins": 400000}
+general3 = {"name": "Great General Vru", "experience": 110000, "attack": 1600, "defense": 55, "health": 11000,
+            "coins": 450000}
+boss1 = {"name": "Zef the Big Goblin", "experience": 1000, "attack": 50, "defense": 10, "health": 500, "coins": 2000}
+boss2 = {"name": "Colonel Zad", "experience": 10000, "attack": 500, "defense": 30, "health": 2000, "coins": 100000}
+boss3 = {"name": "General Devious", "experience": 100000, "attack": 1500, "defense": 50, "health": 10000,
+         "coins": 300000}
+boss4 = {"name": "Indus the Dragon", "experience": 500000, "attack": 4500, "defense": 70, "health": 55000,
+         "coins": 1000000}
+UNKNOWN = {"name": "UNKNOWN", "experience": 1000, "attack": 3000, "defense": 20, "health": 10000}
+Merino = {"name": "Merino the Great", "experience": 1000000, "attack": 10000, "defense": 90, "health": 100000,
+          "coins": 10000000}
+next_level = [20, 40, 80, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 2500, 5000, 7500, 10000]
+
+
+def f_print(s):
+    for c in s:
+        sys.stdout.write(c)
+        sys.stdout.flush()
+        time.sleep(0.05)
+
+
+def s_print(s):
+    for c in s:
+        sys.stdout.write(c)
+        sys.stdout.flush()
+        time.sleep(0.25)
+
+
+name = input("Enter character name: ")
+
+
+def back_story():
+    s_print(f"This is the story of {name}")
+    skip = input("\nDo you want to skip the back story? (OPTIONS: Yes or No): ")
+    if skip.lower() == "yes":
+        main()
+    if skip.lower() == "no":
+        pass
+    f_print(f"{name} woke up from a loud noise! ")
+    f_print("\nYou slowly exit out of your room and see a bounty hunter. ")
+    print("\n(Options: Fight or Scream)")
+    action1 = input(f"What should {name} do? ")
+
+    if action1 == "Fight":
+        fight(UNKNOWN)
+
+    if action1 == "Scream":
+        f_print(f"{name}: HELP!!!")
+        f_print("\nMom and dad wakes up! ")
+        f_print("\nYou see your parents getting stabbed...")
+        f_print("\nYou see your dad enter the room with a knife wound...")
+        f_print("\nDad: Escape through the window. NOW!")
+        f_print("\nAs you escape you look back... to see your dad die.")
+        f_print("\nYou ran as fast as you can.")
+        f_print("\nYou suddenly hear a loud explosion and the debris hit your head. ")
+        f_print("\nThe last thing you remember is seeing your family's mansion burn.")
+
+    s_print("\nYou woke up all of a sudden...")
+    f_print("\nDoctor: You've been in a coma for 10 years!")
+    f_print(f"\n{name}: What year is this?")
+    f_print("\nDoctor: 1732")
+    f_print(f"\n{name}: How old am I?")
+    f_print("\nDoctor: You are 17.")
+    f_print("\nDoctor: You're lucky because I'm your doctor,")
+    f_print("\nDoctor: You have a blood type called Blood Z.")
+    f_print("\nDoctor: It is an extremely rare blood type that grants power.")
+    f_print("\nDoctor: If others were to know this then they'll try killing you.")
+    f_print("\nDoctor: You can leave in a few days. ")
+    f_print("\nA few days later... ")
+    f_print("\nYou were released for the hospital!. ")
+    print("You can now explore, level up, buy items and continue with the story!")
+
+
+def stats():
+    print("Current Stats:")
+    print("Name: " + str(player[name]))
+    print("Level: " + str(player["level"]))
+    print("Experience: " + str(player["experience"]))
+    print("Current Health: " + str(player["health"]))
+    print("Max Health: " + str(player["max_health"]))
+    print("Defense: " + str(player["defense"]))
+    print("Attack: " + str(player["attack"]))
+    print("Coins: " + str(player["coins"]))
+    print("-" * 160)
+
+
+def shop():
+    question1 = input("Would you like to buy a weapon or armor? ")
+    if question1 == "weapon":
+        print("You have " + str(player["coins"]) + " coins. ")
+        print("""
+        Welcome to the weapon shop! 
+        (1) Dagger | +100 attack damage | Cost: 100 coins
+        (2) Spear | +1,000 attack damage | Cost: 500 coins
+        (3) Sword  | +4,000 attack damage | Cost: 10,000 coins
+        (4) Sabre | +10000 | Cost: 45,000 coins
+        (5) Excalibur | +25000 attack damage | Cost: 200,000 coins
+        (6) Flintlock | +100000 attack damage | Cost: 1,000,000 coins
+        """)
+        question2 = input("What weapon would you like? (ENTER ITEM #): ")
+        if question2 == "1":
+            if player["coins"] >= 100:
+                player["attack"] = player["attack"]+100
+                player["coins"] = player["coins"]-100
+                print("Thank you for your purchase! ")
+                main()
+            else:
+                if player["coins"] < 100:
+                    print("You don't have enough coins! ")
+                    main()
+        if question2 == "2":
+            if player["coins"] >= 500:
+                player["attack"] = player["attack"]+1000
+                player["coins"] = player["coins"]-500
+                print("Thank you for your purchase! ")
+                main()
+            else:
+                if player["coins"] < 500:
+                    print("You don't have enough coins! ")
+                    main()
+        if question2 == "3":
+            if player["coins"] >= 10000:
+                player["attack"] = player["attack"]+4000
+                player["coins"] = player["coins"]-10000
+                print("Thank you for your purchase! ")
+                main()
+            else:
+                if player["coins"] < 10000:
+                    print("You don't have enough coins! ")
+                    main()
+        if question2 == "4":
+            if player["coins"] >= 45000:
+                player["attack"] = player["attack"]+10000
+                player["coins"] = player["coins"]-45000
+                print("Thank you for your purchase! ")
+                main()
+            else:
+                if player["coins"] < 45000:
+                    print("You don't have enough coins! ")
+                    main()
+        if question2 == "5":
+            if player["coins"] >= 200000:
+                player["attack"] = player["attack"]+25000
+                player["coins"] = player["coins"]-200000
+                print("Thank you for your purchase! ")
+                main()
+            else:
+                if player["coins"] < 200000:
+                    print("You don't have enough coins! ")
+                    main()
+        if question2 == "6":
+            if player["coins"] >= 1000000:
+                player["attack"] = player["attack"]+100000
+                player["coins"] = player["coins"]-1000000
+                print("Thank you for your purchase! ")
+                main()
+            else:
+                if player["coins"] < 1000000:
+                    print("You don't have enough coins! ")
+                    main()
+
+    if question1 == "armor":
+        print("You have " + str(player["coins"]) + " coins. ")
+        print("""       
+        Welcome to the armor shop! 
+        (1) Rusted armor | +5 defense and +500 max health| Cost: 100 coins
+        (2) Standard armor | +15 defense and +5,000 max health | Cost: 2,000 coins
+        (3) Light armor | +30 defense and +9,800 max health | Cost: 25,000 coins
+        (4) Milanese armor | +50 defense and +12,000 max health | Cost: 350,000 coins
+        (5) Gothic armor | +55 defense and +24,500 max health | Cost: 400,000 coins
+        (6) Great Holy Knight Armor | +100 defense and +100,000 max health | Cost: 1,200,000 Coins
+        """)
+        question3 = input("What armor would you like? (ENTER ITEM #): ")
+        if question3 == "1":
+            if player["coins"] >= 100:
+                player["defense"] = player["defense"]+5
+                player["max_health"] = player["max_health"]+500
+                player["coins"] = player["coins"]-100
+                print("Thank you for purchasing! ")
+                main()
+            else:
+                if player["coins"] < 100:
+                    print("You don't have enough coins! ")
+                    main()
+        if question3 == "2":
+            if player["coins"] >= 2000:
+                player["defense"] = player["defense"]+15
+                player["max_health"] = player["max_health"]+5000
+                player["coins"] = player["coins"]-2000
+                print("Thank you for purchasing! ")
+                main()
+            else:
+                if player["coins"] < 2000:
+                    print("You don't have enough coins! ")
+                    main()
+        if question3 == "3":
+            if player["coins"] >= 25000:
+                player["defense"] = player["defense"]+30
+                player["max_health"] = player["max_health"]+9800
+                player["coins"] = player["coins"]-25000
+                print("Thank you for purchasing! ")
+                main()
+            else:
+                if player["coins"] < 25000:
+                    print("You don't have enough coins! ")
+                    main()
+        if question3 == "4":
+            if player["coins"] >= 350000:
+                player["defense"] = player["defense"]+50
+                player["max_health"] = player["max_health"]+12000
+                player["coins"] = player["coins"]-350000
+                print("Thank you for purchasing! ")
+                main()
+            else:
+                if player["coins"] < 350000:
+                    print("You don't have enough coins! ")
+                    main()
+        if question3 == "5":
+            if player["coins"] >= 400000:
+                player["defense"] = player["defense"]+55
+                player["max_health"] = player["max_health"]+24500
+                player["coins"] = player["coins"]-400000
+                print("Thank you for purchasing! ")
+                main()
+            else:
+                if player["coins"] < 400000:
+                    print("You don't have enough coins! ")
+                    main()
+        if question3 == "6":
+            if player["coins"] >= 1200000:
+                player["defense"] = player["defense"]+100
+                player["max_health"] = player["max_health"]+100000
+                player["coins"] = player["coins"]-1200000
+                print("Thank you for purchasing! ")
+                main()
+            else:
+                if player["coins"] < 1200000:
+                    print("You don't have enough coins! ")
+                    main()
+
+
+def story():
+    print("CHAPTER 1:")
+    f_print(f"{name} decided to become a bounty hunter.")
+    f_print(f"\n{name} did this because he/she remembers the killer's bounty hunter uniform  ")
+    f_print(f"\n{name}: If I get more involved then surely I will find out who killed my parents.")
+    f_print(f"\n{name}: I must go up the ranks to know the truth! ")
+    f_print(f"\n{name} enters the guild and sees a bounty poster. ")
+    f_print("\nWANTED: Zef the Big Goblin | REWARD: 1,000 COINS | Difficulty: Medium")
+    fight1 = input("\nAre you ready to fight? (OPTIONS: Yes or No): ")
+    if fight1.lower() == 'yes':
+        fight(boss1)
+        f_print("\nZef the Big Goblin killed a few innocent villagers, you gained reputation.")
+        f_print("\nVillager: Thank you for saving us! He could've killed us if it weren't for you")
+        f_print(f"\n{name}: Do you know any bounty hunter who killed a family with Blood Z Type? ")
+        f_print("\nVillager: It happened a long time ago but why would I answer that? Colonel Zad will kill me! ")
+        f_print("\nVillager: Colonel Zad wants to keep the news top secret. ")
+        f_print("\nVillager: Only a few villages know about this because of a rumor! ")
+        f_print(f"\n{name}: What if I killed Colonel Zad? ")
+        f_print("\nVillager: Villages will pay you A LOT then! ")
+        f_print("\nVillager: If he were to die then you'll save multiple villages! ")
+        f_print("\nVillager: Maybe he'll know what you're looking for! ")
+        f_print(f"\n{name}: Where is he though? ")
+        f_print("\nVillager: He's in top of that mountain and there will be a big mountain! ")
+        f_print("\nVillager: You have to talk to the village chief to accept the bounty offer! ")
+        f_print(f"\n{name} enters the big hut to meet the village chief.")
+        print("CHAPTER 1 OVER! ")
+        continue1 = input("Would you like to move on to chapter 2? (Yes or No): ")
+        if continue1.lower() == 'yes':
+            story2()
+        if continue1.lower() == 'no':
+            main()
+    if fight1.lower() == 'no':
+        main()
+
+
+def story2():
+    print("CHAPTER 2:")
+    f_print("Village chief: Hello, i've heard many good things about you.")
+    f_print(f"\n{name}: I just want to accept the bounty offer.")
+    f_print("\nVillage chief: Sure thing! The three village chiefs want to give you this offer...")
+    f_print("\nWANTED: Colonel Zad | Reward: 100,000 COINS | Difficulty: HARD")
+    f_print("\nVillage chief: You must first head to that mountain and take down his guards! ")
+    f_print("\nAs you walked your way to the mountain you see guards! (DIFFICULTY: EASY) ")
+    fight2 = input("\nAre you ready to fight? (OPTIONS: Yes or No): ")
+    if fight2.lower() == 'yes':
+        fight(guards1)
+        f_print("\nThe other guards were alerted and so you ran as fast as you can! ")
+        f_print("\nYou reached the top of the mountain! ")
+        f_print("\nYou see a huge castle! ")
+        f_print("\nYou see more guards that tried to chase you and you must kill them! (DIFFICULTY: EASY) ")
+        fight3 = input("\nAre you ready to fight (OPTIONS: Yes or No): ")
+        if fight3.lower() == 'yes':
+            fight(guards1)
+            f_print("\nYou finally killed all the guards, the only person left is Colonel Zad")
+            f_print("\nColonel Zad: I see that you are strong. Why'd you come here? ")
+            f_print(f"\n{name}: I want to know what happened to the family that was killed with Blood Z Type!")
+            f_print("\nColonel Zad: You mean that weak family my boss killed to gain power? ")
+            f_print(f"\n{name}: WHO IS YOUR BOSS?")
+            f_print("\nColonel Zad: Are you stupid or what? He is the King of this land!")
+            f_print("\nColonel Zad: After he gained that blood type he went through the ranks and made himself King!")
+            f_print("\nColonel Zad: If anyone knows this then I will KILL you.")
+            f_print("\nColonel Zad: I'm telling you this because you're about to die. I don't care who you are.")
+            f_print("\nColonel Zad: NOW FIGHT ME INTRUDER!")
+            fight4 = input("\nAre you ready to fight? (OPTIONS: Yes or No): ")
+            if fight4.lower() == 'yes':
+                fight(boss2)
+                f_print("\nColonel Zad: You'll regret this. If my boss finds out I died he will come for you.")
+                f_print(f"\n{name}: Good, I have the same blood type as him.")
+                f_print("\nColonel Zad: What... Did... You... sa- *Dies* ")
+                f_print(f"\n{name} returns back to the village. ")
+                f_print("\nVillagers: THANK YOU FOR SAVING US!")
+                f_print(f"\nThere was a celebration made for {name}'s victory. ")
+                f_print("\nThe calm before the storm... ")
+                print("CHAPTER 2 OVER! ")
+                continue2 = input("Would you like to move on to chapter 3? (OPTIONS: Yes or No): ")
+                if continue2.lower() == 'yes':
+                    story3()
+                if continue2.lower() == 'no':
+                    main()
+            if fight4.lower() == 'no':
+                main()
+        if fight3.lower() == 'no':
+            main()
+    if fight2.lower() == 'no':
+        main()
+
+
+def story3():
+    print("CHAPTER 3:")
+    f_print(f"{name}: Village chief, who is the King of this island? ")
+    f_print("\nVillage chief: I'm surprised you don't know. He is very known. ")
+    f_print("\nVillage chief: The citizens of this country call him Merino the Great. ")
+    f_print("\nVillage chief: 5 years ago he was the strongest in this country and took the crown. ")
+    f_print("\nVillage chief: Him becoming leader made this country corrupt. ")
+    f_print("\nVillage chief: He's known as Merino the Great because he conquered the lands of 10 countries! ")
+    f_print(f"\n{name}: Does he have a bounty? ")
+    f_print("\nVillage chief: Ha ha ha! That's a joke right? He's way too powerful! ")
+    f_print("\nVillage chief: Im not too sure but he has the highest bounty in the world! ")
+    f_print("\nVillage chief: Talk to the King of Dob to get a bounty offer. ")
+    f_print("\nNext day later... ")
+    f_print("\nBOOM! ")
+    f_print("\nVillagers: CANNONS INCOMING FROM MERINO's ARMY! ")
+    f_print("\nVillage chief: Fight them off! Village warriors! ")
+    f_print(f"\nVillage chief: Please kill the cannon soldiers, {name}! (DIFFICULTY: HARD)")
+    fight5 = input("\nAre you ready to fight? (OPTIONS: Yes or No): ")
+    if fight5.lower() == 'yes':
+        fight(cannon)
+        f_print("\nGeneral Devious: SO YOU ARE THE ONE THAT KILLED COLONEL ZAD? ")
+        f_print("\nGeneral Devious: I, GENERAL DEVIOUS WILL DESTROY YOU AND THIS VILLAGE! ")
+        f_print("\nGeneral Devious: YOU'LL PAY FOR THAT! ")
+        f_print(f"\n{name}: Why are you yelling at me? Shut up already. ")
+        f_print("\nGeneral Devious: GRR! THAT'S IT! ")
+        f_print("\nGeneral Devious: ROYAL GUARDS, MURDER HIM!")
+        fight6 = input("\nAre you ready to fight? (OPTIONS: Yes or No): ")
+        if fight6.lower() == 'yes':
+            fight(royal_guards)
+            f_print("\nGeneral Devious: HOW DARE YOU EVEN KILL MY ROYAL GUARDS! ")
+            f_print("\nGeneral Devious: YOU LEAVE NO CHOICE! I MUST PERSONALLY KILL YOU! ")
+            fight7 = input("\nAre you ready to fight? (OPTIONS: Yes or No): ")
+            if fight7.lower() == 'yes':
+                fight(boss3)
+                f_print("\nGeneral Devious: YOU'LL REGRET FOR KILLING ME! THE KING WILL kill Yo- *dies*")
+                f_print("\nAs you turned behind you realized every villager died. ")
+                f_print("\nYou cried as the village burned. ")
+                f_print("\nThe same village that kept you alive for 10 years is now gone... ")
+                print("CHAPTER 3 OVER! ")
+                continue3 = input("Would you like to move on to chapter 4? (OPTIONS: Yes or No): ")
+                if continue3.lower() == 'yes':
+                    story4()
+                if continue3.lower() == 'no':
+                    main()
+            if fight7.lower() == 'no':
+                main()
+        if fight6.lower() == 'no':
+            main()
+    if fight5.lower() == 'no':
+        main()
+
+
+def story4():
+    print("CHAPTER 4:")
+    f_print("3 days later...")
+    f_print(f"\n{name} arrived to the Dob Empire to meet the King of Dob. ")
+    f_print("\nKing of Dob: Hello there, i've heard many great things about you. ")
+    f_print("\nKing of Dob: I heard rumors that you want to defeat Merino the Great. ")
+    f_print("\nKing of Dob: He took over 50% of my land! HOW DARE HIM! ")
+    f_print(f"\n{name}: I just want to kill him and get my bounty money. ")
+    f_print("\nKing of Dob: HA! I am not sure if you are worthy to say such things! ")
+    f_print("\nBOOM!")
+    f_print("\nKing of Dob: WHAT WAS THAT? ")
+    f_print("\nGuards: Your highness, Indus the Dragon is back! ")
+    f_print("\nKing of Dob: WHAT?! ")
+    f_print("\nGuards: He is destroying the capital city!")
+    f_print("\nGuards: He killed more than half of our soldiers! ")
+    f_print("\nKing of Dob: HOW IS THIS POSSIBLE? ")
+    f_print(f"\nKing of Dob: {name}, you're our only hope! If you protect me i'll help you kill Merino and pay you! ")
+    f_print("\nKing of Dob: I'll even pay you 1,000,000 coins just for you to defeat this dragon! ")
+    f_print("\nYou run outside and you encountered Indus the Dragon! (DIFFICULTY: EXTREMELY HARD)")
+    fight8 = input("\nAre you ready to fight? (OPTIONS: Yes or No): ")
+    if fight8.lower() == "yes":
+        fight(boss4)
+        f_print("\nKing of Dob: I am SHOCKED how powerful you are. ")
+        f_print("\nKing of Dob: I am starting to believe that you can defeat Merino! ")
+        f_print(f"\n{name}: Why don't you fight him Merino yourself? ")
+        f_print("\nKing of Dob: I may not look like it but I am 456 years old. I'm not fit to fight anymore. ")
+        f_print(f"\n{name}: Understandable. ")
+        f_print("\nKing of Dob: The citizens of Dob will never forget what you did today. ")
+        f_print("\nKing of Dob: Tomorrow morning I will set up my remaining army to attack Merino's castle. ")
+        f_print("\nKing of Dob: It'll be the hardest thing that this country will do. ")
+        f_print("\nKing of Dob: I'm not as worried due to the fact that you're in our side. ")
+        f_print("\nKing of Dob: Just prepare because tomorrow is gonna be one hell of a day. ")
+        print("CHAPTER 4 OVER! ")
+        continue4 = input("Would you like to move on to chapter 4? (OPTIONS: Yes or No): ")
+        if continue4.lower() == 'yes':
+            story5()
+        if continue4.lower() == 'no':
+            main()
+    if fight8.lower() == "no":
+        main()
+
+
+def story5():
+    print("CHAPTER 5:")
+    f_print("King of Dob: The day has cme for us to take back our land! ")
+    f_print("\nCitizens: YES YOUR HIGHNESS! ")
+    f_print("\nKing of Dob: Be safe my citizens, while I take back our land with my army! ")
+    f_print("\nKing of Dob: SOLDIERS! LETS MARCH! NOW! ")
+    f_print("\n4 hours later...")
+    f_print("\nWe reached Merino's castle. Said to be the largest in the world. ")
+    f_print("\nThe war began... ")
+    f_print(f"\nKing of Dob: {name}, I need you to kill the three generals first. ")
+    f_print("\nKing of Dob: Does are his last three generals. ")
+    f_print("\nKing of Dob: If you kill them then Merino has no other choice but to face us. ")
+    f_print("\nKing of Dob: I heard those three generals have a very good bounty in their heads. ")
+    f_print(f"\n{name}: Understandable. I'll go kill them now. ")
+    f_print(f"\n{name} runs and sees a tall figure. It looks like he is a general. ")
+    f_print("\nGeneral Vod: You have to face me before you kill Merino. ")
+    f_print(f"\n{name}: Enough talking! I'll kill you! ")
+    fight9 = input("\nAre you ready to fight? (OPTIONS: Yes or No): ")
+    if fight9.lower() == 'yes':
+        fight(general1)
+        f_print(f"\n{name}: That was pretty. Where's the next one. ")
+        f_print("\nDob Soldier: I was a boss not so far away from east. ")
+        f_print(f"\n{name}: Thank you soldier. Good luck. ")
+        f_print("\nDob Soldier: Thank yo- *Gets shot by an arrow*")
+        f_print(f"\n{name}: Dammit. I better hurry to the other generals. ")
+        f_print(f"\nWhile {name} was running Easy, you heard a shout. ")
+        f_print("\nGeneral Love: GUYS! KILL THEM ALREADY OR GENERAL LOVE WILL KILL YOU! ")
+        f_print("\nYou encountered another general! ")
+        f_print("\nGeneral Love: Impressive for you to come this far! ")
+        f_print("\nGeneral Love: You sure do look hot! Wanna ki-")
+        f_print(f"\n{name}: Shut up. Lets fight! ")
+        fight10 = input("\nAre you ready to fight? (OPTIONS: Yes or No): ")
+        if fight10.lower() == 'yes':
+            fight(general2)
+            f_print(f"\n{name}: Dammit. I did not want to kill a women. ")
+            f_print("\nUNKNOWN: WHAT THE! HOW DARE YOU KILL MY WIFE!?!")
+            f_print(f"\n{name}: Who might you be? ")
+            f_print("\nGreat General Vru: I AM GREAT GENERAL VRU! ")
+            f_print("\nGreat General Vru: YOU'LL PAY FOR WHAT YOU HAVE DONE! ")
+            fight11 = input("\nAre you ready to fight? (OPTIONS: Yes or No): ")
+            if fight11.lower() == 'yes':
+                fight(general3)
+                f_print("\nGreat General Vru: You will regret that. Merino will com- *dies*")
+                f_print("\nAs you turned behind you see the soldiers of the Dob Empire is winning. ")
+                f_print("\nBut then you see a HUGE EXPLOSION! ")
+                f_print("\nKing of Dob: MERINO THE GREAT IS COMING! WATCH OUT! ")
+                f_print("\nBOOM! BOOM! BOOM! ")
+                f_print(f"\n{name} runs to face Merino the Great! ")
+                f_print("\nMerino the Great: Who might you be? ")
+                f_print(f"\n{name}: YOU KILLED MY FAMILY! ")
+                f_print("\nMerino the Great: I killed many. Which one? ")
+                f_print(f"\n{name}: The family with the same blood as you stole. ")
+                f_print("\nMerino the Great: I thought you DIED! ")
+                f_print("\nMerino the Great: You must die no matter what. ")
+                fight12 = input("\nAre you ready to fight? (OPTIONS: Yes or No): ")
+                if fight12.lower() == 'yes':
+                    fight(Merino)
+                    f_print("\nAs Merino's blood splattered everywhere you absorbed it all. ")
+                    f_print("\nYou became more powerful. ")
+                    f_print("\nAfter Merino the Great died... His soldiers were scared and all ran. ")
+                    f_print("\nKing of Dob: I cant believe it. WE DID IT! ")
+                    f_print(f"\n{name}: Finally. I killed my parent's killer. I can life happily now. ")
+                    print("THE END! ")
+                    continue5 = input("Do you want to go back to the menu or quit? ")
+                    if continue5.lower() == 'menu':
+                        main()
+                    if continue5.lower() == 'quit':
+                        print("Thank you for playing! ")
+                        sys.exit()
+                if fight12.lower() == 'no':
+                    main()
+            if fight11.lower() == 'no':
+                main()
+        if fight10.lower() == 'no':
+            main()
+    if fight9.lower() == 'no':
+        main()
+
+
+def character():
+    player[name] = name
+    player["experience"] = 0
+    player["coins"] = 0
+    player["level"] = 1
+    player["attack"] = 30
+    player["defense"] = 10
+    player["health"] = 150
+    player["max_health"] = player["health"]
+
+
+def rest():
+    player["health"] = player["max_health"]
+    print("Your health is full.")
+
+
+def is_alive() -> bool:
+    return player["health"] > 0
+
+
+def level_up():
+    for i in next_level:
+        if player["experience"] >= i:
+            print("-" * 160)
+            player["level"] += 1
+            player["max_health"] += 15
+            player["attack"] += 5
+            player["defense"] += 4
+            print("You leveled up!")
+            rest()
+            print("-" * 160)
+            next_level.pop(0)
+
+
+def fight(enemy):
+    print("All of a sudden a " + str(enemy['name']) + " attacks you!")
+    creature = enemy.copy()
+    turn: int = 0
+    while creature["health"] > 0 and is_alive():
+        turn += 1
+        print("")
+        if turn % 2 == 1:
+            print("It is your turn to attack.")
+            time.sleep(1)
+            hit = random.randint(1, player["attack"]) - random.randint(1, player["defense"])
+            if hit <= 0:
+                print("You miss...")
+            else:
+                creature["health"] -= hit
+                print("You hit " + str(hit) + " on the enemy")
+        else:
+            print("It is enemy turn to attack.")
+            time.sleep(1)
+            hit = random.randint(1, creature["attack"]) - random.randint(1, player["defense"])
+            if hit <= 0:
+                print("The enemy miss...")
+            else:
+                player["health"] -= hit
+                print("The enemy hits " + str(hit) + " on you")
+
+        if creature["health"] > 0 and not is_alive():
+            print("GAME OVER! " + str(player[name]) + " died.")
+            sys.exit()
+
+        if is_alive() and creature["health"] <= 0:
+            print("")
+            print("You won the battle.")
+            print("")
+            player["experience"] += creature["experience"]
+            player["coins"] += creature["coins"]
+            print("You earned " + str(creature["coins"]) + " coins")
+            print("You won " + str(creature["experience"]) + " experience")
+            level_up()
+
+
+def first_main():
+    character()
+    while True:
+        back_story()
+        break
+
+
+def main():
+
+    while True:
+        print("Type (1) for more information")
+        menu = input(">").lower()
+        if menu == "1":
+            print("Commands: (1)Help, (2)Story, (3)Shop, (4)Rest, (5)Explore, (6)stats, (7)quit")
+        elif menu == "4":
+            rest()
+        elif menu == "5":
+            shuffle = random.randint(1, 10)
+            if shuffle <= 5:
+                fight(bandit)
+            else:
+                fight(goblin)
+        elif menu == "6":
+            stats()
+        elif menu == "2":
+            story_question = input("Start (1)new story or (2)load? ")
+            if story_question == "1":
+                story()
+            if story_question == "2":
+                chapter = input("Are you in chapter 1, 2, 3, 4, or 5?")
+                if chapter == "1":
+                    story()
+                if chapter == "2":
+                    story2()
+                if chapter == "3":
+                    story3()
+                if chapter == "4":
+                    story4()
+                if chapter == "5":
+                    story5()
+
+        elif menu == "3":
+            shop()
+        elif menu == "7":
+            print("You quit the game.")
+            sys.exit()
+        else:
+            print("Invalid Key, please try again")
+
+
+first_main()
+main()
